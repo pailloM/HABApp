@@ -54,7 +54,7 @@ def connect():
     )
 
     if config.connection.tls:
-        log.info(f"CA cert path: {config.connection.ca_cert}")
+        log.info(f"CA cert path: {config.connection.tls_ca}")
         if config.connection.tls_ca is not None:
             STATUS.client.tls_set(config.connection.tls_ca)
         else:

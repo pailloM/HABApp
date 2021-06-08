@@ -10,8 +10,8 @@ from HABApp.runtime import shutdown
 from .events import MqttValueChangeEvent, MqttValueUpdateEvent
 from ..core.const.json import load_json
 
-log = logging.getLogger('HABApp.mqtt.connection')
-log_msg = logging.getLogger('HABApp.EventBus.mqtt')
+log = logging.getLogger("HABApp.mqtt.connection")
+log_msg = logging.getLogger("HABApp.EventBus.mqtt")
 
 
 class MqttStatus:
@@ -33,34 +33,39 @@ def setup():
     config.connection.subscribe_for_changes(connect)
 
     # shutdown
-    shutdown.register_func(disconnect, msg='Disconnecting MQTT')
+    shutdown.register_func(disconnect, msg="Disconnecting MQTT")
 
 
 def connect():
     config = HABApp.config.CONFIG.mqtt
 
     if not config.connection.host:
-        log.info('MQTT disabled')
+        log.info("MQTT disabled")
         disconnect()
         return None
 
     if STATUS.connected:
-        log.info('disconnecting')
+        log.info("disconnecting")
         STATUS.client.disconnect()
         STATUS.connected = False
 
     STATUS.client = mqtt.Client(
-        client_id=config.connection.client_id,
-        clean_session=False
+        client_id=config.connection.client_id, clean_session=True
     )
 
     if config.connection.tls:
-        STATUS.client.tls_set()
+        log.info(f"CA cert path: {config.connection.ca_cert}")
+        if config.connection.tls_ca is not None:
+            STATUS.client.tls_set(config.connection.tls_ca)
+        else:
+            STATUS.client.tls_set()
 
         # we can only set tls_insecure if we have a tls connection
         if config.connection.tls_insecure:
-            log.warning('Verification of server hostname in server certificate disabled!')
-            log.warning('Use this only for testing, not for a real system!')
+            log.warning(
+                "Verification of server hostname in server certificate disabled!"
+            )
+            log.warning("Use this only for testing, not for a real system!")
             STATUS.client.tls_insecure_set(True)
 
     # set user/pw if required
@@ -78,7 +83,7 @@ def connect():
         config.connection.host, port=config.connection.port, keepalive=60
     )
 
-    log.info(f'Connecting to {config.connection.host}:{config.connection.port}')
+    log.info(f"Connecting to {config.connection.host}:{config.connection.port}")
 
     if not STATUS.loop_started:
         STATUS.client.loop_start()
@@ -110,7 +115,10 @@ def on_connect(client, userdata, flags, rc):
 
 @log_exception
 def on_disconnect(client, userdata, rc):
-    log.log(logging.INFO if not rc else logging.ERROR, f'Disconnect: {mqtt.error_string(rc)} ({rc})')
+    log.log(
+        logging.INFO if not rc else logging.ERROR,
+        f"Disconnect: {mqtt.error_string(rc)} ({rc})",
+    )
     STATUS.connected = False
 
 
@@ -121,15 +129,17 @@ def subscription_changed():
 
     if STATUS.subscriptions:
         unsubscribe = [k[0] for k in STATUS.subscriptions]
-        log.debug('Unsubscribing from:')
+        log.debug("Unsubscribing from:")
         for t in unsubscribe:
             log.debug(f' - "{t}"')
         STATUS.client.unsubscribe(unsubscribe)
 
     topics = HABApp.config.CONFIG.mqtt.subscribe.topics
     default_qos = HABApp.config.CONFIG.mqtt.subscribe.qos
-    STATUS.subscriptions = [(topic, qos if qos is not None else default_qos) for topic, qos in topics]
-    log.debug('Subscribing to:')
+    STATUS.subscriptions = [
+        (topic, qos if qos is not None else default_qos) for topic, qos in topics
+    ]
+    log.debug("Subscribing to:")
     for topic, qos in STATUS.subscriptions:
         log.debug(f' - "{topic}" (QoS {qos:d})')
     STATUS.client.subscribe(STATUS.subscriptions)
@@ -143,10 +153,15 @@ def process_msg(client, userdata, message: mqtt.MQTTMessage):
         payload = message.payload.decode("utf-8")
 
         if log_msg.isEnabledFor(logging.DEBUG):
-            log_msg._log(logging.DEBUG, f'{topic} ({message.qos}): {payload}', [])
+            log_msg._log(logging.DEBUG, f"{topic} ({message.qos}): {payload}", [])
 
         # load json dict and list
-        if payload.startswith('{') and payload.endswith('}') or payload.startswith('[') and payload.endswith(']'):
+        if (
+            payload.startswith("{")
+            and payload.endswith("}")
+            or payload.startswith("[")
+            and payload.endswith("]")
+        ):
             try:
                 payload = load_json(payload)
             except ValueError:
@@ -164,15 +179,19 @@ def process_msg(client, userdata, message: mqtt.MQTTMessage):
         # Payload ist binary
         payload = message.payload
         if log_msg.isEnabledFor(logging.DEBUG):
-            log_msg._log(logging.DEBUG, f'{topic} ({message.qos}): {payload[:20]}...', [])
+            log_msg._log(
+                logging.DEBUG, f"{topic} ({message.qos}): {payload[:20]}...", []
+            )
 
-    _item = None    # type: typing.Optional[HABApp.mqtt.items.MqttBaseItem]
+    _item = None  # type: typing.Optional[HABApp.mqtt.items.MqttBaseItem]
     try:
-        _item = Items.get_item(topic)   # type: HABApp.mqtt.items.MqttBaseItem
+        _item = Items.get_item(topic)  # type: HABApp.mqtt.items.MqttBaseItem
     except HABApp.core.Items.ItemNotFoundException:
         # only create items for if the message has the retain flag
         if message.retain:
-            _item = Items.create_item(topic, HABApp.mqtt.items.MqttItem)  # type: HABApp.mqtt.items.MqttItem
+            _item = Items.create_item(
+                topic, HABApp.mqtt.items.MqttItem
+            )  # type: HABApp.mqtt.items.MqttItem
 
     # we don't have an item -> we process only the event
     if _item is None:
@@ -186,4 +205,6 @@ def process_msg(client, userdata, message: mqtt.MQTTMessage):
     # Post events
     HABApp.core.EventBus.post_event(topic, MqttValueUpdateEvent(topic, payload))
     if _old_state != payload:
-        HABApp.core.EventBus.post_event(topic, MqttValueChangeEvent(topic, payload, _old_state))
+        HABApp.core.EventBus.post_event(
+            topic, MqttValueChangeEvent(topic, payload, _old_state)
+        )

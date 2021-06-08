@@ -4,7 +4,7 @@ from EasyCo import ConfigContainer, ConfigEntry
 from voluptuous import Invalid
 
 
-def MqttTopicValidator(v, msg=''):
+def MqttTopicValidator(v, msg=""):
     if isinstance(v, str):
         return [(v, 0)]
 
@@ -31,30 +31,33 @@ def MqttTopicValidator(v, msg=''):
 
 
 class Connection(ConfigContainer):
-    client_id: str = 'HABApp'
-    host: str = ''
+    client_id: str = "HABApp"
+    host: str = ""
     port: int = 8883
-    user: str = ''
-    password: str = ''
+    user: str = ""
+    password: str = ""
     tls: bool = True
+    tls_ca: str = ""
     tls_insecure: bool = False
 
 
 class Subscribe(ConfigContainer):
-    qos: int = ConfigEntry(default=0, description='Default QoS for subscribing')
+    qos: int = ConfigEntry(default=0, description="Default QoS for subscribing")
     topics: typing.List[typing.Union[str, int]] = ConfigEntry(
-        default_factory=lambda: list(('#', 0)), validator=MqttTopicValidator
+        default_factory=lambda: list(("#", 0)), validator=MqttTopicValidator
     )
 
 
 class Publish(ConfigContainer):
-    qos: int = ConfigEntry(default=0, description='Default QoS when publishing values')
-    retain: bool = ConfigEntry(default=False, description='Default retain flag when publishing values')
+    qos: int = ConfigEntry(default=0, description="Default QoS when publishing values")
+    retain: bool = ConfigEntry(
+        default=False, description="Default retain flag when publishing values"
+    )
 
 
 class General(ConfigContainer):
     listen_only: bool = ConfigEntry(
-        False, description='If True HABApp will not publish any value to the broker'
+        False, description="If True HABApp will not publish any value to the broker"
     )
 
 

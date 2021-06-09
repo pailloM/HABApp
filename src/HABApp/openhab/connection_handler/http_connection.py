@@ -73,7 +73,7 @@ async def post(url: str, log_404=True, json=None, data=None, **kwargs: Any) -> O
 
     mgr = _RequestContextManager(
         HTTP_SESSION._request(
-            METH_POST, url, allow_redirects=HTTP_ALLOW_REDIRECTS, headers=headers, data=data, json=json, **kwargs
+            METH_POST, url, allow_redirects=HTTP_ALLOW_REDIRECTS, headers=headers, data=data, json=json, verify_ssl=False, **kwargs
         )
     )
 
@@ -252,7 +252,6 @@ async def start_connection():
         json_serialize=dump_json,
         auth=auth,
         read_bufsize=2**19,  # 512k buffer
-        verify=False,
     )
 
     FUT_UUID = asyncio.create_task(try_uuid())

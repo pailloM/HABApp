@@ -1,4 +1,5 @@
 import logging
+import ssl
 import typing
 
 import paho.mqtt.client as mqtt

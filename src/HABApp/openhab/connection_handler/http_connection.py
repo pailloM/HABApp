@@ -52,7 +52,7 @@ async def get(url: str, log_404=True, disconnect_on_error=False, **kwargs: Any) 
     assert not url.startswith('/'), url
     url = f'{HTTP_PREFIX}/rest/{url}/'
 
-    mgr = _RequestContextManager(HTTP_SESSION._request(METH_GET, url, allow_redirects=HTTP_ALLOW_REDIRECTS, **kwargs))
+    mgr = _RequestContextManager(HTTP_SESSION._request(METH_GET, url, allow_redirects=HTTP_ALLOW_REDIRECTS, verify_ssl=False, **kwargs))
     return await check_response(mgr, log_404=log_404, disconnect_on_error=disconnect_on_error)
 
 
@@ -99,7 +99,7 @@ async def put(url: str, log_404=True, json=None, data=None, **kwargs: Any) -> Op
 
     mgr = _RequestContextManager(
         HTTP_SESSION._request(
-            METH_PUT, url, allow_redirects=HTTP_ALLOW_REDIRECTS, headers=headers, data=data, json=json, **kwargs
+            METH_PUT, url, allow_redirects=HTTP_ALLOW_REDIRECTS, headers=headers, data=data, json=json,  verify_ssl=False, **kwargs
         )
     )
 
@@ -250,7 +250,7 @@ async def start_connection():
     HTTP_SESSION = aiohttp.ClientSession(
         timeout=aiohttp.ClientTimeout(total=None),
         json_serialize=dump_json,
-        auth=auth,
+        auth=auth, 
         read_bufsize=2**19,  # 512k buffer
     )
 

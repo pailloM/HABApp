@@ -272,7 +272,7 @@ async def start_sse_event_listener():
                     f'{event_prefix}/things/*/statuschanged'    # Thing status changes
                 ,
                 session=HTTP_SESSION,
-                verify=False,
+                ssl=False,
         ) as event_source:
             async for event in event_source:
                 try:

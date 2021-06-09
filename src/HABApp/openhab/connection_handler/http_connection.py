@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import traceback
+import ssl
 import typing
 from typing import Any, Optional
 
@@ -250,7 +251,8 @@ async def start_connection():
         timeout=aiohttp.ClientTimeout(total=None),
         json_serialize=dump_json,
         auth=auth,
-        read_bufsize=2**19  # 512k buffer
+        read_bufsize=2**19,  # 512k buffer
+        verify=False,
     )
 
     FUT_UUID = asyncio.create_task(try_uuid())
@@ -270,7 +272,8 @@ async def start_sse_event_listener():
                     f'{event_prefix}/things/*/status,'          # Thing status updates
                     f'{event_prefix}/things/*/statuschanged'    # Thing status changes
                 ,
-                session=HTTP_SESSION
+                session=HTTP_SESSION,
+                verify=False,
         ) as event_source:
             async for event in event_source:
                 try:

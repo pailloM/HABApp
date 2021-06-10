@@ -10,7 +10,7 @@ import eascheduler
 from HABApp.core.wrapper import process_exception
 from HABApp.openhab import connection_logic as openhab_connection
 from HABApp.runtime import shutdown
-
+from HABApp.homeassistant import connection_logic as homeassistant_connection
 
 class Runtime:
 
@@ -47,6 +47,9 @@ class Runtime:
         # openhab
         openhab_connection.setup()
 
+        #homeassistant
+        homeassistant_connection.setup()
+        
         # Parameter Files
         await HABApp.parameters.parameter_files.setup_param_files()
 

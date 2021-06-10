@@ -49,7 +49,7 @@ class Runtime:
 
         #homeassistant
         homeassistant_connection.setup()
-        
+
         # Parameter Files
         await HABApp.parameters.parameter_files.setup_param_files()
 

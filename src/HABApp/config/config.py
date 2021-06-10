@@ -7,6 +7,7 @@ from EasyCo import ConfigEntry, ConfigFile, PathContainer
 from ._conf_location import Location
 from ._conf_mqtt import Mqtt
 from ._conf_openhab import Openhab
+from ._conf_homeassistant import Homeassistant
 from .platform_defaults import get_log_folder
 
 log = logging.getLogger('HABApp.Config')
@@ -55,6 +56,7 @@ class HABAppConfig(ConfigFile):
 
     mqtt = Mqtt()
     openhab = Openhab()
+    homeassistant = Homeassistant()
 
 
 CONFIG: HABAppConfig = HABAppConfig()

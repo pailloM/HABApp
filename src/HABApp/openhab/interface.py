@@ -1,4 +1,4 @@
-from HABApp.openhab.connection_handler.func_sync import \
+from HABApp.homeassistant.connection_handler.func_sync import \
     post_update, send_command, \
     get_item, item_exists, remove_item, create_item, \
     get_thing, get_persistence_data,\

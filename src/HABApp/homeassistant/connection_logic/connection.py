@@ -3,9 +3,9 @@ import HABApp.core
 import HABApp.openhab.events
 from HABApp.core import Items
 from HABApp.core.wrapper import ignore_exception
-from HABApp.openhab.connection_handler import http_connection
-from HABApp.openhab.map_events import get_event
-from HABApp.openhab.map_items import map_item
+from HABApp.homeassistant.connection_handler import http_connection
+from HABApp.homeassistant.map_events import get_event
+from HABApp.homeassistant.map_items import map_item
 from ._plugin import on_connect, on_disconnect, setup_plugins
 
 log = http_connection.log

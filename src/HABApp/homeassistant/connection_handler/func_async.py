@@ -6,9 +6,8 @@ from urllib.parse import quote as quote_url
 
 from HABApp.core.const.json import load_json
 from HABApp.core.items import BaseValueItem
-from HABApp.openhab.errors import OpenhabDisconnectedError, OpenhabNotReadyYet, ThingNotEditableError, \
-    ThingNotFoundError, ItemNotEditableError, ItemNotFoundError, MetadataNotEditableError, ExpectedSuccessFromOpenhab
-from HABApp.openhab.definitions.rest import ItemChannelLinkDefinition, LinkNotFoundError, OpenhabThingDefinition
+from HABApp.homeassistant.errors import HomeassistantDisconnectedError, HomeassistantNotReadyYet, ThingNotEditableError, \
+    ThingNotFoundError, ItemNotEditableError, ItemNotFoundError, MetadataNotEditableError, ExpectedSuccessFromHomeassistant
 from HABApp.openhab.definitions.rest.habapp_data import get_api_vals, load_habapp_meta
 from .http_connection import delete, get, post, put, log, async_get_root, async_get_uuid
 
@@ -61,7 +60,7 @@ async def async_get_items(include_habapp_meta=False, disconnect_on_error=False) 
         return await resp.json(loads=load_json, encoding='utf-8')
     except Exception as e:
         # sometimes uuid already works but items not - so we ignore these errors here, too
-        if not isinstance(e, (OpenhabDisconnectedError, OpenhabNotReadyYet, ExpectedSuccessFromOpenhab)):
+        if not isinstance(e, (HomeassistantDisconnectedError, HomeassistantNotReadyYet, ExpectedSuccessFromHomeassistant)):
             for line in traceback.format_exc().splitlines():
                 log.error(line)
         return None
@@ -90,19 +89,10 @@ async def async_get_things(disconnect_on_error=False) -> Optional[List[Dict[str,
         return await resp.json(loads=load_json, encoding='utf-8')
     except Exception as e:
         # sometimes uuid and items already works but things not - so we ignore these errors here, too
-        if not isinstance(e, (OpenhabDisconnectedError, OpenhabNotReadyYet, ExpectedSuccessFromOpenhab)):
+        if not isinstance(e, (HomeassistantDisconnectedError, HomeassistantNotReadyYet, ExpectedSuccessFromHomeassistant)):
             for line in traceback.format_exc().splitlines():
                 log.error(line)
         return None
-
-
-async def async_get_thing(uid: str) -> OpenhabThingDefinition:
-    ret = await get(f'things/{uid:s}')
-    if ret.status >= 300:
-        raise ThingNotFoundError.from_uid(uid)
-
-    return OpenhabThingDefinition.parse_obj(await ret.json(loads=load_json, encoding='utf-8'))
-
 
 async def async_get_persistence_data(item_name: str, persistence: typing.Optional[str],
                                      start_time: typing.Optional[datetime.datetime],

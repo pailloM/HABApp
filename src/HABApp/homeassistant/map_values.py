@@ -1,6 +1,6 @@
 import datetime
 
-from HABApp.openhab.definitions import HSBValue, OnOffValue, OpenClosedValue, PercentValue, QuantityValue, RawValue, \
+from HABApp.homeassistant.definitions import HSBValue, OnOffValue, OpenClosedValue, PercentValue, QuantityValue, RawValue, \
     UpDownValue
 
 

@@ -3,7 +3,7 @@ import logging
 import HABApp
 from HABApp.core import Items
 from HABApp.core.wrapper import ignore_exception
-from HABApp.openhab.map_items import map_item
+from HABApp.homeassistant.map_items import map_item
 from ._plugin import OnConnectPlugin
 from ..interface_async import async_get_items, async_get_things
 

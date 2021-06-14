@@ -206,59 +206,8 @@ def __get_link_url(channel_uid: str, item_name: str) -> str:
     return 'links/' + quote_url(f"{item_name}/{channel_uid}")
 
 
-async def async_remove_channel_link(channel_uid: str, item_name: str) -> bool:
-    ret = await delete(__get_link_url(channel_uid, item_name))
-    if ret is None:
-        return False
-    return ret.status == 200
 
 
-async def async_get_channel_links() -> List[Dict[str, str]]:
-    ret = await get('links')
-    if ret.status >= 300:
-        return None
-    else:
-        return await ret.json(loads=load_json, encoding='utf-8')
-
-
-async def async_get_channel_link_mode_auto() -> bool:
-    ret = await get('links/auto')
-    if ret.status >= 300:
-        return False
-    else:
-        return await ret.json(loads=load_json, encoding='utf-8')
-
-
-async def async_get_channel_link(channel_uid: str, item_name: str) -> ItemChannelLinkDefinition:
-    ret = await get(__get_link_url(channel_uid, item_name), log_404=False)
-    if ret.status == 404:
-        raise LinkNotFoundError(f'Link {item_name} -> {channel_uid} not found!')
-    if ret.status >= 300:
-        return None
-    else:
-        return ItemChannelLinkDefinition(**await ret.json(loads=load_json, encoding='utf-8'))
-
-
-async def async_channel_link_exists(channel_uid: str, item_name: str) -> bool:
-    ret = await get(__get_link_url(channel_uid, item_name), log_404=False)
-    return ret.status == 200
-
-
-async def async_create_channel_link(
-        channel_uid: str, item_name: str, configuration: Optional[Dict[str, Any]] = None) -> bool:
-
-    # if the passed item doesn't exist OpenHAB creates a new empty item item
-    # this is undesired and why we raise an Exception
-    if not await async_item_exists(item_name):
-        raise ItemNotFoundError.from_name(item_name)
-
-    ret = await put(
-        __get_link_url(channel_uid, item_name),
-        json={'configuration': configuration} if configuration is not None else {}
-    )
-    if ret is None:
-        return False
-    return ret.status == 200
 
 
 # ---------------------------------------------------------------------------------------------------------------------

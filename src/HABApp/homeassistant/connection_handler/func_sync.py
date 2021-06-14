@@ -106,36 +106,6 @@ def create_item(item_type: str, name: str, label="", category="",
     return fut.result()
 
 
-def get_item(item_name: str, metadata: Optional[str] = None) -> OpenhabItemDefinition:
-    """Return the complete OpenHAB item definition
-
-    :param item_name: name of the item or item
-    :param metadata: metadata to include (optional, comma separated or search expression)
-    :return:
-    """
-    if isinstance(item_name, HABApp.openhab.items.base_item.BaseValueItem):
-        item_name = item_name.name
-    assert isinstance(item_name, str), type(item_name)
-    assert metadata is None or isinstance(metadata, str), type(metadata)
-
-    fut = asyncio.run_coroutine_threadsafe(async_get_item(item_name, metadata=metadata), loop)
-    data = fut.result()
-    return OpenhabItemDefinition.parse_obj(data)
-
-
-def get_thing(thing_name: str) -> OpenhabThingDefinition:
-    """ Return the complete OpenHAB thing definition
-
-    :param thing_name: name of the thing or the item
-    """
-    if isinstance(thing_name, BaseItem):
-        thing_name = thing_name.name
-    assert isinstance(thing_name, str), type(thing_name)
-
-    fut = asyncio.run_coroutine_threadsafe(async_get_thing(thing_name), loop)
-    return fut.result()
-
-
 @log_exception
 def remove_item(item_name: str):
     """

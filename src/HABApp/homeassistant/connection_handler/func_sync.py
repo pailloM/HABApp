@@ -170,31 +170,6 @@ def remove_metadata(item_name: str, namespace: str):
     return fut.result()
 
 
-def get_persistence_data(item_name: str, persistence: Optional[str],
-                         start_time: Optional[datetime.datetime],
-                         end_time: Optional[datetime.datetime]) -> OpenhabPersistenceData:
-    """Query historical data from the OpenHAB persistence service
-
-    :param item_name: name of the persistet item
-    :param persistence: name of the persistence service (e.g. ``rrd4j``, ``mapdb``). If not set default will be used
-    :param start_time: return only items which are newer than this
-    :param end_time: return only items which are older than this
-    """
-    assert isinstance(item_name, str) and item_name, item_name
-    assert isinstance(persistence, str) or persistence is None, persistence
-    assert isinstance(start_time, datetime.datetime) or start_time is None, start_time
-    assert isinstance(end_time, datetime.datetime) or end_time is None, end_time
-
-    fut = asyncio.run_coroutine_threadsafe(
-        async_get_persistence_data(
-            item_name=item_name, persistence=persistence, start_time=start_time, end_time=end_time
-        ),
-        loop
-    )
-
-    ret = fut.result()
-    return OpenhabPersistenceData.from_dict(ret)
-
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Link handling is experimental

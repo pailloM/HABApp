@@ -1,17 +1,7 @@
 import typing
 from HABApp.core.const.json import load_json
 
-EVENT_LIST = [
-    # item events
-    ItemStateEvent, ItemStateChangedEvent, ItemCommandEvent, ItemAddedEvent,
-    ItemUpdatedEvent, ItemRemovedEvent, ItemStatePredictedEvent, GroupItemStateChangedEvent,
-
-    # channel events
-    ChannelTriggeredEvent,
-
-    # thing events
-    ThingStatusInfoEvent, ThingStatusInfoChangedEvent, ThingFirmwareStatusInfoEvent
-]
+EVENT_LIST = []
 
 __event_lookup: typing.Dict[str, typing.Type[OpenhabEvent]] = {k.__name__: k for k in EVENT_LIST}
 __event_lookup['ConfigStatusInfoEvent'] = ThingConfigStatusInfoEvent        # Naming from openhab is inconsistent here

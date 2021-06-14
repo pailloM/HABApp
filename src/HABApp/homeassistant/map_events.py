@@ -1,12 +1,6 @@
 import typing
 from HABApp.core.const.json import load_json
 
-from .events import OpenhabEvent, \
-    ItemStateEvent, ItemStateChangedEvent, ItemCommandEvent, ItemAddedEvent, \
-    ItemUpdatedEvent, ItemRemovedEvent, ItemStatePredictedEvent, GroupItemStateChangedEvent, \
-    ChannelTriggeredEvent, \
-    ThingStatusInfoChangedEvent, ThingStatusInfoEvent, ThingConfigStatusInfoEvent, ThingFirmwareStatusInfoEvent
-
 EVENT_LIST = [
     # item events
     ItemStateEvent, ItemStateChangedEvent, ItemCommandEvent, ItemAddedEvent,

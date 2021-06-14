@@ -4,8 +4,6 @@ from HABApp.core.const.json import load_json
 EVENT_LIST = []
 
 __event_lookup: typing.Dict[str, typing.Type[HomeassistantEvent]] = {k.__name__: k for k in EVENT_LIST}
-__event_lookup['ConfigStatusInfoEvent'] = ThingConfigStatusInfoEvent        # Naming from openhab is inconsistent here
-__event_lookup['FirmwareStatusInfoEvent'] = ThingFirmwareStatusInfoEvent    # Naming from openhab is inconsistent here
 
 
 def get_event(_in_dict: dict) -> HomeassistantEvent:

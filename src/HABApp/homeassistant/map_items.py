@@ -4,8 +4,8 @@ import typing
 
 from HABApp.core.items.base_item import BaseItem
 from HABApp.core.wrapper import process_exception
-from HABApp.openhab.definitions.values import QuantityValue, RawValue
-from HABApp.openhab.items import ColorItem, ContactItem, DatetimeItem, DimmerItem, GroupItem, ImageItem, LocationItem, \
+from HABApp.homeassistant.definitions.values import QuantityValue, RawValue
+from HABApp.homeassistant.items import ColorItem, ContactItem, DatetimeItem, DimmerItem, GroupItem, ImageItem, LocationItem, \
     NumberItem, PlayerItem, RollershutterItem, StringItem, SwitchItem
 
 log = logging.getLogger('HABApp.openhab')

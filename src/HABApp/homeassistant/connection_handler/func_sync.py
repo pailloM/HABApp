@@ -9,8 +9,7 @@ from HABApp.core.const import loop
 from HABApp.core.items.base_valueitem import BaseValueItem, BaseItem
 from HABApp.core.wrapper import log_exception
 from .func_async import async_post_update, async_send_command, async_create_item, async_get_item, async_get_thing, \
-    async_set_metadata, async_remove_metadata, async_get_channel_link, async_create_channel_link, \
-    async_remove_channel_link, async_channel_link_exists, \
+    async_set_metadata, async_remove_metadata, \
     async_remove_item, async_item_exists, async_get_persistence_data
 from .. import definitions
 

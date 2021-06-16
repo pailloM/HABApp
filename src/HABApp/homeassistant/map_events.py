@@ -1,5 +1,6 @@
 import typing
 from HABApp.core.const.json import load_json
+from .events import HomeassistantEvent
 
 EVENT_LIST = []
 

@@ -267,7 +267,7 @@ async def start_sse_event_listener():
         event_prefix = 'homeassistant'
 
         async with sse_client.EventSource(
-                url=f'{HTTP_PREFIX}/rest/events?topics='
+                url=f'{HTTP_PREFIX}/events?topics='
                     f'{event_prefix}/items/,'                   # Item updates
                     f'{event_prefix}/channels/,'                # Channel update
                     f'{event_prefix}/things/*/status,'          # Thing status updates

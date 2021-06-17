@@ -6,12 +6,12 @@ import logging
 import time
 from HABApp.core.wrapper import log_exception
 from ._plugin import PluginBase
-from HABApp.openhab.errors import OpenhabNotReadyYet, OpenhabDisconnectedError
+from HABApp.homeassistant.errors import HomeassistantNotReadyYet, HomeassistantDisconnectedError
 
 log = logging.getLogger('HABApp.homeassistant.ping')
 
 
-class PingOpenhab(PluginBase):
+class PingHomeassistant(PluginBase):
     def __init__(self):
         self.ping_value: Optional[float] = None
         self.ping_sent: Optional[float] = None
@@ -22,14 +22,14 @@ class PingOpenhab(PluginBase):
         self.fut_ping: Optional[asyncio.Future] = None
 
     def setup(self):
-        HABApp.config.CONFIG.openhab.ping.subscribe_for_changes(self.cfg_changed)
+        HABApp.config.CONFIG.homeassistant.ping.subscribe_for_changes(self.cfg_changed)
         self.cfg_changed()
 
     def on_connect(self):
         if not self.IS_CONNECTED:
             return None
 
-        if not HABApp.config.CONFIG.openhab.ping.enabled:
+        if not HABApp.config.CONFIG.homeassistant.ping.enabled:
             return None
 
         # initialize
@@ -53,19 +53,19 @@ class PingOpenhab(PluginBase):
             self.listener.cancel()
             self.listener = None
 
-        if not HABApp.config.CONFIG.openhab.ping.enabled:
+        if not HABApp.config.CONFIG.homeassistant.ping.enabled:
             return None
 
         self.listener = HABApp.core.EventBusListener(
-            HABApp.config.CONFIG.openhab.ping.item,
+            HABApp.config.CONFIG.homeassistant.ping.item,
             HABApp.core.WrappedFunction(self.ping_received),
-            HABApp.openhab.events.ItemStateEvent
+            HABApp.homeassistant.events.ItemStateEvent
         )
         HABApp.core.EventBus.add_listener(self.listener)
 
         self.on_connect()
 
-    async def ping_received(self, event: HABApp.openhab.events.ItemStateEvent):
+    async def ping_received(self, event: HABApp.homeassistant.events.ItemStateEvent):
         value = event.value
         if value != self.ping_value:
             return None
@@ -89,15 +89,15 @@ class PingOpenhab(PluginBase):
                 self.ping_new = None
                 self.ping_sent = time.time()
 
-                await HABApp.openhab.interface_async.async_post_update(
-                    HABApp.config.CONFIG.openhab.ping.item,
+                await HABApp.homeassistant.interface_async.async_post_update(
+                    HABApp.config.CONFIG.homeassistant.ping.item,
                     f'{self.ping_value:.1f}' if self.ping_value is not None else None
                 )
 
-                await asyncio.sleep(HABApp.config.CONFIG.openhab.ping.interval)
+                await asyncio.sleep(HABApp.config.CONFIG.homeassistant.ping.interval)
 
-        except (OpenhabNotReadyYet, OpenhabDisconnectedError):
+        except (HomeassistantNotReadyYet, HomeassistantDisconnectedError):
             pass
 
 
-PLUGIN_PING = PingOpenhab.create_plugin()
+PLUGIN_PING = PingHomeassistant.create_plugin()

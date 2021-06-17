@@ -10,7 +10,7 @@ from ..interface_async import async_get_items, async_get_things
 log = logging.getLogger('HABApp.openhab.items')
 
 
-class LoadAllOpenhabItems(OnConnectPlugin):
+class LoadAllHomeassistantItems(OnConnectPlugin):
 
     @ignore_exception
     async def on_connect_function(self):
@@ -77,4 +77,4 @@ class LoadAllOpenhabItems(OnConnectPlugin):
         return None
 
 
-PLUGIN_LOAD_ITEMS = LoadAllOpenhabItems.create_plugin()
+PLUGIN_LOAD_ITEMS = LoadAllHomeassistantItems.create_plugin()

@@ -7,7 +7,7 @@ from HABApp.openhab.interface import post_update, send_command, get_persistence_
 
 
 class HomeassistantItem(BaseValueItem):
-    """Base class for items which exists in OpenHAB.
+    """Base class for items which exists in Homeassistant.
     """
 
     def oh_send_command(self, value: typing.Any = MISSING):

@@ -248,6 +248,7 @@ async def start_connection():
         )
 
     # todo: add possibility to configure line size with read_bufsize
+    log.debug("HTTP session created")
     HTTP_SESSION = aiohttp.ClientSession(
         timeout=aiohttp.ClientTimeout(total=None),
         json_serialize=dump_json,

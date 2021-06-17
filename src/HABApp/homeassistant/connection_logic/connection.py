@@ -35,6 +35,7 @@ def setup():
 
 
 async def start():
+    log.debug("Homeassistant start connection")
     await http_connection.start_connection()
 
 

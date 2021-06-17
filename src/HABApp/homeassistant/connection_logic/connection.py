@@ -32,8 +32,6 @@ def setup():
     setup_plugins()
     log.debug("Homeassistant plugins initialized")
 
-    await start()
-
     return None
 
 

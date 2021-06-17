@@ -7,7 +7,7 @@ from HABApp.core.wrapper import process_exception
 from HABApp.homeassistant.definitions.values import QuantityValue, RawValue
 
 
-log = logging.getLogger('HABApp.openhab')
+log = logging.getLogger('HABApp.homeassistant')
 
 
 def map_item(name, openhab_type: str, openhab_value: str) -> typing.Optional[BaseItem]:

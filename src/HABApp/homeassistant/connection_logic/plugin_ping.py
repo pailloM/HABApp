@@ -8,7 +8,7 @@ from HABApp.core.wrapper import log_exception
 from ._plugin import PluginBase
 from HABApp.openhab.errors import OpenhabNotReadyYet, OpenhabDisconnectedError
 
-log = logging.getLogger('HABApp.openhab.ping')
+log = logging.getLogger('HABApp.homeassistant.ping')
 
 
 class PingOpenhab(PluginBase):

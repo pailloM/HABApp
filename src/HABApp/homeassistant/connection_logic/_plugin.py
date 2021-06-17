@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from HABApp.core.wrapper import ExceptionToHABApp
 
-log = logging.getLogger('HABApp.openhab.plugin')
+log = logging.getLogger('HABApp.homeassistant.plugin')
 
 
 class PluginBase:

@@ -18,15 +18,19 @@ def setup():
     http_connection.ON_CONNECTED = on_connect
     http_connection.ON_DISCONNECTED = on_disconnect
     http_connection.ON_SSE_EVENT = on_sse_event
+    log.debug("Homeassistant call back initialized")
 
     # shutdown handler for connection
     shutdown.register_func(http_connection.stop_connection, msg='Stopping Home-assistant connection')
+    log.debug("Homeassistant connection shutdown registered")
 
     # shutdown handler for plugins
     shutdown.register_func(on_disconnect, msg='Stopping Home-assistant plugins')
+    log.debug("Homeassistant plugins shutdown registered")
 
     # initialize all plugins
     setup_plugins()
+    log.debug("Homeassistant plugins initialized")
     return None
 
 

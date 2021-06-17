@@ -223,6 +223,7 @@ async def stop_connection():
 
 async def start_connection():
     global HTTP_PREFIX, HTTP_SESSION, FUT_UUID
+    log.debug("Start connection")
 
     await stop_connection()
 
@@ -230,7 +231,7 @@ async def start_connection():
     port: str = HABApp.CONFIG.homeassistant.connection.port
     ca_cert: str = HABApp.CONFIG.homeassistant.connection.ca_cert
     cert_verify: bool = HABApp.CONFIG.homeassistant.connection.cert_verify
-
+    log.debug("Loaded connection config")
     # do not run without host
     if host == '':
         HTTP_PREFIX = None
@@ -242,9 +243,9 @@ async def start_connection():
         HTTP_PREFIX = f'ws://{host:s}:{port:d}'
 
     auth = None
-    if HABApp.CONFIG.homeassistant.connection.token:
+    if HABApp.CONFIG.homeassistant.connection.user:
         auth = aiohttp.BasicAuth(
-            HABApp.CONFIG.homeassistant.connection.token,
+            HABApp.CONFIG.homeassistant.connection.user,
         )
 
     # todo: add possibility to configure line size with read_bufsize

@@ -54,45 +54,8 @@ def on_sse_event(event_dict: dict):
             HABApp.core.EventBus.post_event(event.name, event)
             return None
 
-        if isinstance(event, HABApp.openhab.events.ThingStatusInfoEvent):
-            __thing = Items.get_item(event.name)   # type: HABApp.openhab.items.Thing
-            __thing.process_event(event)
-            HABApp.core.EventBus.post_event(event.name, event)
-            return None
-
-        # Workaround because there is no GroupItemStateEvent
-        if isinstance(event, HABApp.openhab.events.GroupItemStateChangedEvent):
-            __item = Items.get_item(event.name)  # type: HABApp.openhab.items.GroupItem
-            __item.set_value(event.value)
-            HABApp.core.EventBus.post_event(event.name, event)
-            return None
     except HABApp.core.Items.ItemNotFoundException:
         pass
-
-    # Events which change the ItemRegistry
-    if isinstance(event, (HABApp.openhab.events.ItemAddedEvent, HABApp.openhab.events.ItemUpdatedEvent)):
-        item = map_item(event.name, event.type, 'NULL')
-        if item is None:
-            return None
-
-        # check already existing item so we can print a warning if something changes
-        try:
-            existing_item = Items.get_item(item.name)
-            if isinstance(existing_item, item.__class__):
-                # it's the same item class so we don't replace it!
-                item = existing_item
-            else:
-                log.warning(f'Item changed type from {existing_item.__class__} to {item.__class__}')
-                # remove the item so it can be added again
-                Items.pop_item(item.name)
-        except Items.ItemNotFoundException:
-            pass
-
-        # always overwrite with new definition
-        Items.add_item(item)
-
-    elif isinstance(event, HABApp.openhab.events.ItemRemovedEvent):
-        Items.pop_item(event.name)
 
     # Send Event to Event Bus
     HABApp.core.EventBus.post_event(event.name, event)

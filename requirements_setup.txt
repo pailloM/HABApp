@@ -9,4 +9,4 @@ pydantic==1.8.2
 stackprinter==0.2.5
 voluptuous==0.12.1
 watchdog==2.1.1
-ujson==4.0.2
+ujson==5.1.0
